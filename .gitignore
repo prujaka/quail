@@ -64,3 +64,9 @@ Cases/Miscellaneous/Plot
 *.swp
 *.coverage
 test_case_[0-9]*.py
+
+#############################
+# .idea user-specific files #
+#############################
+.idea/
+.circleci/
