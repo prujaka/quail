@@ -69,3 +69,8 @@ test_case_[0-9]*.py
 # .idea  #
 ##########
 .idea/
+
+#########
+# pyenv #
+#########
+.python_version/
