@@ -44,6 +44,7 @@ class FcnType(Enum):
 	LinearBurgers = auto()
 	DiffGaussian = auto()
 	DiffGaussian2D = auto()
+	SimpleGaussian = auto()
 
 
 class BCType(Enum):
@@ -351,6 +352,15 @@ class DiffGaussian2D(FcnBase):
 		C3y = al[1] * (4*t + 1)
 
 		Uq[:, :, 0] = C1 * np.exp(-1.*(C2x / C3x) - (C2y / C3y))
+
+		return Uq
+
+class SimpleGaussian(FcnBase):
+	def __init__(self, x0=0.):
+		self.x0 = x0
+
+	def get_state(self, physics, x, t):
+		Uq = np.exp(-(x - self.x0)**2)
 
 		return Uq
 

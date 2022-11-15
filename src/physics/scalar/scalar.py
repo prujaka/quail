@@ -397,6 +397,7 @@ class Burgers1D(base.PhysicsBase):
 			scalar_fcn_type.ShockBurgers : scalar_fcns.ShockBurgers,
 			scalar_fcn_type.SineBurgers : scalar_fcns.SineBurgers,
 			scalar_fcn_type.LinearBurgers : scalar_fcns.LinearBurgers,
+			scalar_fcn_type.SimpleGaussian: scalar_fcns.SimpleGaussian,
 		}
 
 		self.IC_fcn_map.update(d)

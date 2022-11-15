@@ -2,7 +2,7 @@ import numpy as np
 
 TimeStepping = {
 	"InitialTime" : 0.,
-	"FinalTime" : 0.5,
+	"FinalTime" : 1.5,
 	"CFL" : 0.1,
 	"TimeStepper" : "SSPRK3",
 }
@@ -27,13 +27,13 @@ Physics = {
 }
 
 InitialCondition = {
-	"Function" : "SineBurgers",
-	"omega" : 1.,
+	"Function" : "SimpleGaussian",
+	"x0" : 1,
 }
 
 ExactSolution = {
-	"Function" : "SineBurgers",
-	"omega" : 1.,
+	"Function" : "SimpleGaussian",
+	"x0" : 1,
 }
 
 Output = {
