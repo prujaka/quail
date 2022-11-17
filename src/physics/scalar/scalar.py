@@ -406,6 +406,8 @@ class Burgers1D(base.PhysicsBase):
 
 		self.source_map.update({
 			scalar_source_type.SimpleSource : scalar_fcns.SimpleSource,
+			scalar_source_type.SimpleGaussianSource:
+				scalar_fcns.SimpleGaussianSource,
 		})
 
 	class StateVariables(Enum):

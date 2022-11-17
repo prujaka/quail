@@ -2,7 +2,7 @@ import numpy as np
 
 TimeStepping = {
 	"InitialTime" : 0.,
-	"FinalTime" : 1.5,
+	"FinalTime" : 1.,
 	"CFL" : 0.1,
 	"TimeStepper" : "SSPRK3",
 }
@@ -42,18 +42,23 @@ Output = {
 
 BoundaryConditions = {
 	"x1" : {
-		"Function" : "SineBurgers",
-		"omega" : 2*np.pi,
-		"BCType" : "StateAll",
+		"BCType" : "Extrapolate",
 	},
 	"x2" : {
 		"BCType" : "Extrapolate",
 	},
 }
 
+# SourceTerms = {
+# 	"Source1" : { # Name of source term ("Source1") doesn't matter
+# 		"Function" : "SimpleSource",
+# 		"nu" : 0.,
+# 	},
+# }
+
 SourceTerms = {
 	"Source1" : { # Name of source term ("Source1") doesn't matter
-		"Function" : "SimpleSource",
-		"nu" : -1,
+		"Function" : "SimpleGaussianSource",
+		"x0" : 1.,
 	},
 }

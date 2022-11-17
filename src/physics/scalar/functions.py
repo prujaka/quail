@@ -61,6 +61,7 @@ class SourceType(Enum):
 	source terms are specific to the available scalar equation sets.
 	'''
 	SimpleSource = auto()
+	SimpleGaussianSource = auto()
 	
 
 class ConvNumFluxType(Enum):
@@ -356,11 +357,12 @@ class DiffGaussian2D(FcnBase):
 		return Uq
 
 class SimpleGaussian(FcnBase):
-	def __init__(self, x0=0.):
+	def __init__(self, x0=0., c=1.):
 		self.x0 = x0
+		self.c = c
 
 	def get_state(self, physics, x, t):
-		Uq = np.exp(-(x - self.x0)**2)
+		Uq = np.exp(-(x - self.x0 - self.c*t)**2)
 
 		return Uq
 
@@ -406,6 +408,48 @@ class SimpleSource(SourceBase):
 
 	def get_jacobian(self, physics, Uq, x, t):
 		return self.nu
+
+
+class SimpleGaussianSource(SourceBase):
+	'''
+	Source term corresponding to the SimpleGaussian solution profile
+
+	Attributes:
+	-----------
+	x0: float
+		initial maximum position
+	c: float
+		wave speed
+	'''
+	def __init__(self, x0=0, c=1., **kwargs):
+		'''
+		This method initializes the attributes.
+
+		Inputs:
+		-------
+			x0: initial maximum position
+			c: wave speed
+
+		Outputs:
+		--------
+			self: attributes initialized
+		'''
+		super().__init__(kwargs)
+		self.x0 = x0
+		self.c = c
+
+	def get_source(self, physics, Uq, x, t):
+		x0 = self.x0
+		c = self.c
+		arg = x - self.x0 - self.c*t
+		f = np.exp(-arg**2)
+		fprime = -2 * arg * f
+		S = fprime * (f - c)
+
+		return S
+
+	def get_jacobian(self, physics, Uq, x, t):
+		return 0
 
 
 '''
