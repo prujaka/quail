@@ -37,3 +37,15 @@ from physics.base.functions import ConvNumFluxType as base_conv_num_flux_type
 from physics.base.functions import FcnType as base_fcn_type
 
 # TODO: paste euler-specific imports and rewrite
+
+
+class ShallowWater(base.PhysicsBase):
+    pass
+
+
+class ShallowWater1D(ShallowWater):
+    pass
+
+
+class ShallowWater2D(ShallowWater):
+    pass
