@@ -36,7 +36,15 @@ from physics.base.functions import BCType as base_BC_type
 from physics.base.functions import ConvNumFluxType as base_conv_num_flux_type
 from physics.base.functions import FcnType as base_fcn_type
 
-# TODO: paste euler-specific imports and rewrite
+import physics.shallowwater.functions as shallowwater_fcns
+from physics.shallowwater.functions import BCType as shallowwater_BC_type
+from physics.shallowwater.functions import ConvNumFluxType as \
+		shallowwater_conv_num_flux_type
+from physics.shallowwater.functions import FcnType as shallowwater_fcn_type
+from physics.shallowwater.functions import SourceType as \
+    shallowwater_source_type
+
+# TODO: define all the mentioned functions for SW
 
 
 class ShallowWater(base.PhysicsBase):

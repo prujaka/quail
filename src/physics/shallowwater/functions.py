@@ -15,7 +15,7 @@
 
 # ------------------------------------------------------------------------ #
 #
-#       File : src/physics/shalowwater/functions.py
+#       File : src/physics/shallowwater/functions.py
 #
 #       Contains definitions of Functions, boundary conditions, and source
 #       terms for the shallow water equations.
@@ -47,7 +47,7 @@ class SourceType(Enum):
     pass
 
 
-'''
+''' 
 ---------------
 State functions
 ---------------

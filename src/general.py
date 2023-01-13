@@ -177,6 +177,8 @@ class PhysicsType(Enum):
 		# Model for 2nd order pendulum ODE (0D model)
 	MultispeciesPSR = auto()
 		# Model for PSR (with H2/Air chemistry)
+	ShallowWater = auto()
+		# Shallow water equations (1D and 2D)
 		
 		
 class TransportType(Enum):
