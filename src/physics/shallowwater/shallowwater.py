@@ -45,7 +45,9 @@ from physics.shallowwater.functions import SourceType as \
     shallowwater_source_type
 
 # TODO: define all the mentioned functions for SW
-
+# TODO: add g parameter to Shallowwater(base.PhysicsBase) like in Euler gamma
+# TODO: pay attention to get_conv_flux_interior, it uses stuff from
+#  get_conv_flux_projected in Lax-Friedrichs flux in functions.py
 
 class ShallowWater(base.PhysicsBase):
     pass
