@@ -94,6 +94,10 @@ def set_physics(mesh, physics_type):
 	    physics_class = euler.Euler1D
 	elif PhysicsType[physics_type] == PhysicsType.Euler and ndims == 2:
 	    physics_class = euler.Euler2D
+	elif PhysicsType[physics_type] == PhysicsType.Shallowwater and ndims == 1:
+	    physics_class = shallowwater.Shallowwater1D
+	elif PhysicsType[physics_type] == PhysicsType.Shallowwater and ndims == 2:
+	    physics_class = shallowwater.Shallowwater2D
 	elif PhysicsType[physics_type] == PhysicsType.NavierStokes and ndims == 1:
 		physics_class = navierstokes.NavierStokes1D
 	elif PhysicsType[physics_type] == PhysicsType.NavierStokes and ndims == 2:

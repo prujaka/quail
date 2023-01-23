@@ -41,7 +41,7 @@ class FcnType(Enum):
     conditions, exact solutions, and/or boundary conditions. These
     functions are specific to the available shallow water equation sets.
     '''
-    DensityWave = auto()
+    DepthWave = auto()
 
 
 class BCType(Enum):
