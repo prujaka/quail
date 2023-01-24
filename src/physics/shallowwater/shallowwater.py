@@ -2,14 +2,14 @@
 #
 #       quail: A lightweight discontinuous Galerkin code for
 #              teaching and prototyping
-#		<https://github.com/IhmeGroup/quail>
+#       <https://github.com/IhmeGroup/quail>
 #
-#		Copyright (C) 2020-2021
+#       Copyright (C) 2020-2021
 #
 #       This program is distributed under the terms of the GNU
-#		General Public License v3.0. You should have received a copy
+#       General Public License v3.0. You should have received a copy
 #       of the GNU General Public License along with this program.
-#		If not, see <https://www.gnu.org/licenses/>.
+#       If not, see <https://www.gnu.org/licenses/>.
 #
 # ------------------------------------------------------------------------ #
 
@@ -39,10 +39,11 @@ from physics.base.functions import FcnType as base_fcn_type
 import physics.shallowwater.functions as shallowwater_fcns
 from physics.shallowwater.functions import BCType as shallowwater_BC_type
 from physics.shallowwater.functions import ConvNumFluxType as \
-		shallowwater_conv_num_flux_type
+    shallowwater_conv_num_flux_type
 from physics.shallowwater.functions import FcnType as shallowwater_fcn_type
 from physics.shallowwater.functions import SourceType as \
     shallowwater_source_type
+
 
 # TODO: define all the mentioned functions for SW
 # TODO: add g parameter to Shallowwater(base.PhysicsBase) like in Euler gamma
@@ -77,8 +78,9 @@ class ShallowWater(base.PhysicsBase):
         self.BC_map.update({
             base_BC_type.StateAll: base_fcns.StateAll,
             base_BC_type.Extrapolate: base_fcns.Extrapolate,
-            euler_BC_type.SlipWall: euler_fcns.SlipWall,
-            euler_BC_type.PressureOutlet: euler_fcns.PressureOutlet,
+            shallowwater_BC_type.SlipWall: shallowwater_fcns.SlipWall,
+            shallowwater_BC_type.PressureOutlet:
+                shallowwater_fcns.PressureOutlet,
         })
 
     def set_physical_params(self, GravitationalAcceleration=9.81):
@@ -88,7 +90,6 @@ class ShallowWater(base.PhysicsBase):
         Inputs:
         -------
             GravitationalAcceleration: free-fall gravitational acceleration
-            SpecificHeatRatio: ratio of specific heats
 
         Outputs:
         --------
@@ -125,7 +126,7 @@ class ShallowWater(base.PhysicsBase):
         ''' Nested functions for common quantities '''
 
         def get_pressure():
-            varq = 0.5 * g * h**2
+            varq = 0.5 * g * h ** 2
             if flag_non_physical:
                 if np.any(varq < 0.):
                     raise errors.NotPhysicalError
@@ -186,8 +187,85 @@ class ShallowWater(base.PhysicsBase):
 
 
 class ShallowWater1D(ShallowWater):
-    pass
+    '''
+    This class corresponds to classic 1D shallow water equations.
+    It inherits attributes and methods from the ShallowWater class.
+    See ShallowWater for detailed comments of attributes and methods.
 
+    Additional methods and attributes are commented below.
+    '''
+    NUM_STATE_VARS = 2
+    NDIMS = 1
 
-class ShallowWater2D(ShallowWater):
-    pass
+    def set_maps(self):
+        super().set_maps()
+
+        d = {
+            shallowwater_fcn_type.SmoothIsentropicFlow:
+                shallowwater_fcns.SmoothIsentropicFlow,
+            shallowwater_fcn_type.MovingShock: shallowwater_fcns.MovingShock,
+            shallowwater_fcn_type.DepthWave: shallowwater_fcns.DepthWave,
+            shallowwater_fcn_type.RiemannProblem:
+                shallowwater_fcns.RiemannProblem,
+            shallowwater_fcn_type.ShuOsherProblem:
+                shallowwater_fcns.ShuOsherProblem,
+        }
+
+        self.IC_fcn_map.update(d)
+        self.exact_fcn_map.update(d)
+        self.BC_fcn_map.update(d)
+
+        self.source_map.update({
+            shallowwater_source_type.StiffFriction:
+                shallowwater_fcns.StiffFriction,
+        })
+
+        self.conv_num_flux_map.update({
+            base_conv_num_flux_type.LaxFriedrichs:
+                shallowwater_fcns.LaxFriedrichs1D,
+            shallowwater_conv_num_flux_type.Roe: shallowwater_fcns.Roe1D,
+        })
+
+    class StateVariables(Enum):
+        Depth = "\\h"
+        XMomentum = "\\h u"
+
+    def get_state_indices(self):
+        ih = self.get_state_index("Depth")
+        ihu = self.get_state_index("XMomentum")
+
+        return ih, ihu
+
+    def get_state_slices(self):
+        sh = self.get_state_slice("Depth")
+        shu = self.get_state_slice("XMomentum")
+
+        return sh, shu
+
+    def get_momentum_slice(self):
+        ihu = self.get_state_index("XMomentum")
+        smom = slice(ihu, ihu + 1)
+
+        return smom
+
+    def get_conv_flux_interior(self, Uq):
+        # Get indices of state variables
+        ih, ihu = self.get_state_indices()
+
+        h = Uq[:, :, ih]  # [n, nq]
+        hu = Uq[:, :, ihu]  # [n, nq]
+
+        # Get velocity
+        u = hu / h
+        # Get squared velocity
+        u2 = u ** 2
+
+        # Calculate pressure using the Ideal Gas Law
+        p = 0.5 * self.g * h ** 2  # [n, nq]
+
+        # Assemble flux matrix
+        F = np.empty(Uq.shape + (self.NDIMS,))  # [n, nq, ns, ndims]
+        F[:, :, ih, 0] = hu  # Flux of mass
+        F[:, :, ihu, 0] = h * u2 + p  # Flux of momentum
+
+        return F, (u2, h, p)
