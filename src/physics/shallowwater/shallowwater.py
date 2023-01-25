@@ -20,8 +20,6 @@
 #       Contains class definitions for 1D and 2D hyperbolic
 #       shallow water equations.
 #
-#       By Sergey Tkachenko (https://github.com/prujaka).
-#
 # ------------------------------------------------------------------------ #
 
 from enum import Enum
@@ -269,3 +267,100 @@ class ShallowWater1D(ShallowWater):
         F[:, :, ihu, 0] = h * u2 + p  # Flux of momentum
 
         return F, (u2, h, p)
+
+
+class ShallowWater2D(ShallowWater):
+    '''
+    This class corresponds to 2D shallow water equations.
+    It inherits attributes and methods from the ShallowWater class.
+    See ShallowWater for detailed comments of attributes and methods.
+
+    Additional methods and attributes are commented below.
+    '''
+    NUM_STATE_VARS = 3
+    NDIMS = 2
+
+    def __init__(self):
+        super().__init__()
+
+    def set_maps(self):
+        super().set_maps()
+
+        d = {
+            shallowwater_fcn_type.IsentropicVortex:
+                shallowwater_fcns.IsentropicVortex,
+            shallowwater_fcn_type.TaylorGreenVortex:
+                shallowwater_fcns.TaylorGreenVortex,
+            shallowwater_fcn_type.GravityRiemann:
+                shallowwater_fcns.GravityRiemann,
+        }
+
+        self.IC_fcn_map.update(d)
+        self.exact_fcn_map.update(d)
+        self.BC_fcn_map.update(d)
+
+        self.source_map.update({
+            shallowwater_source_type.StiffFriction:
+                shallowwater_fcns.StiffFriction,
+            shallowwater_source_type.TaylorGreenSource:
+                shallowwater_fcns.TaylorGreenSource,
+            shallowwater_source_type.GravitySource:
+                shallowwater_fcns.GravitySource,
+        })
+
+        self.conv_num_flux_map.update({
+            base_conv_num_flux_type.LaxFriedrichs:
+                shallowwater_fcns.LaxFriedrichs2D,
+            shallowwater_conv_num_flux_type.Roe: shallowwater_fcns.Roe2D,
+        })
+
+    class StateVariables(Enum):
+        Depth = "\\h"
+        XMomentum = "\\h u"
+        YMomentum = "\\h v"
+
+    def get_state_indices(self):
+        ih = self.get_state_index("Depth")
+        ihu = self.get_state_index("XMomentum")
+        ihv = self.get_state_index("YMomentum")
+
+        return ih, ihu, ihv
+
+    def get_momentum_slice(self):
+        ihu = self.get_state_index("XMomentum")
+        ihv = self.get_state_index("YMomentum")
+        smom = slice(ihu, ihv + 1)
+
+        return smom
+
+    def get_conv_flux_interior(self, Uq):
+        # Get indices/slices of state variables
+        ih, ihu, ihv = self.get_state_indices()
+        smom = self.get_momentum_slice()
+
+        h = Uq[:, :, ih]  # [n, nq]
+        hu = Uq[:, :, ihu]  # [n, nq]
+        hv = Uq[:, :, ihv]  # [n, nq]
+        mom = Uq[:, :, smom]  # [n, nq, ndims]
+
+        # Get velocity in each dimension
+        u = hu / h
+        v = hv / h
+        # Get squared velocities
+        u2 = u ** 2
+        v2 = v ** 2
+
+        # Calculate pressure using the Ideal Gas Law
+        p = 0.5 * self.g * h ** 2  # [n, nq]
+        # Get off-diagonal momentum
+        huv = h * u * v
+
+        # Assemble flux matrix
+        F = np.empty(Uq.shape + (self.NDIMS,))  # [n, nq, ns, ndims]
+        F[:, :, ih, :] = mom  # Flux of mass in all directions
+        F[:, :, ihu, 0] = h * u2 + p  # x-flux of x-momentum
+        F[:, :, ihv, 0] = huv  # x-flux of y-momentum
+        F[:, :, ihu, 1] = huv  # y-flux of x-momentum
+        F[:, :, ihv, 1] = h * v2 + p  # y-flux of y-momentum
+
+        return F, (u2, v2, h, p)

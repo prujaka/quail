@@ -20,8 +20,6 @@
 #       Contains definitions of Functions, boundary conditions, and source
 #       terms for the shallow water equations.
 #
-#       By Sergey Tkachenko (https://github.com/prujaka)
-#
 # ------------------------------------------------------------------------ #
 
 from enum import Enum, auto
@@ -46,8 +44,8 @@ class FcnType(Enum):
 
 class BCType(Enum):
     '''
-    Enum class that stores the types of boundary conditions. These
-    boundary conditions are specific to the available Euler equation sets.
+    Enum class that stores the types of boundary conditions. These boundary
+    conditions are specific to the available shallow water equation sets.
     '''
     SlipWall = auto()
 
@@ -55,7 +53,7 @@ class BCType(Enum):
 class SourceType(Enum):
     '''
     Enum class that stores the types of source terms. These
-    source terms are specific to the available Euler equation sets.
+    source terms are specific to the available shallow water equation sets.
     '''
     pass
 
@@ -157,8 +155,8 @@ or DiffNumFluxType enum members above.
 class LaxFriedrichs1D(ConvNumFluxBase):
     '''
     This class corresponds to the local Lax-Friedrichs flux function for the
-    Euler1D class. This replaces the generalized, less efficient version of
-    the Lax-Friedrichs flux found in base.
+    ShallowWater1D class. This replaces the generalized, less efficient version
+    of the Lax-Friedrichs flux found in base.
     '''
 
     def compute_flux(self, physics, UqL, UqR, normals):
@@ -190,8 +188,8 @@ class LaxFriedrichs1D(ConvNumFluxBase):
 class LaxFriedrichs2D(ConvNumFluxBase):
     '''
     This class corresponds to the local Lax-Friedrichs flux function for the
-    Euler2D class. This replaces the generalized, less efficient version of
-    the Lax-Friedrichs flux found in base.
+    ShallowWater2D class. This replaces the generalized, less efficient version
+    of the Lax-Friedrichs flux found in base.
     '''
 
     def compute_flux(self, physics, UqL, UqR, normals):
