@@ -40,6 +40,7 @@ class FcnType(Enum):
     functions are specific to the available shallow water equation sets.
     '''
     DepthWave = auto()
+    SteadyState = auto()
 
 
 class BCType(Enum):
@@ -67,6 +68,44 @@ comments of attributes and methods. Information specific to the
 corresponding child classes can be found below. These classes should
 correspond to the FcnType enum members above.
 '''
+
+
+class SteadyState(FcnBase):
+    '''
+    Simple smooth density wave.
+
+    Attributes:
+    -----------
+
+
+    '''
+
+    def __init__(self):
+        '''
+        This method initializes the attributes.
+
+        Inputs:
+        -------
+
+
+        Outputs:
+        --------
+            self: attributes initialized
+        '''
+        pass
+
+    def get_state(self, physics, x, t):
+        sh, shu = physics.get_state_slices()
+
+        Uq = np.zeros([x.shape[0], x.shape[1], physics.NUM_STATE_VARS])
+
+        h = 1.0 * x
+        hu = 0. * h
+
+        Uq[:, :, sh] = h
+        Uq[:, :, shu] = hu
+
+        return Uq  # [ne, nq, ns]
 
 
 class DepthWave(FcnBase):

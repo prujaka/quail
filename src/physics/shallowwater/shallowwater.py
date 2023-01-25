@@ -203,6 +203,7 @@ class ShallowWater1D(ShallowWater):
                 shallowwater_fcns.SmoothIsentropicFlow,
             shallowwater_fcn_type.MovingShock: shallowwater_fcns.MovingShock,
             shallowwater_fcn_type.DepthWave: shallowwater_fcns.DepthWave,
+            shallowwater_fcn_type.SteadyState: shallowwater_fcns.SteadyState,
             shallowwater_fcn_type.RiemannProblem:
                 shallowwater_fcns.RiemannProblem,
             shallowwater_fcn_type.ShuOsherProblem:
@@ -291,6 +292,7 @@ class ShallowWater2D(ShallowWater):
                 shallowwater_fcns.IsentropicVortex,
             shallowwater_fcn_type.TaylorGreenVortex:
                 shallowwater_fcns.TaylorGreenVortex,
+            shallowwater_fcn_type.SteadyState: shallowwater_fcns.SteadyState,
             shallowwater_fcn_type.GravityRiemann:
                 shallowwater_fcns.GravityRiemann,
         }
