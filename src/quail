@@ -39,6 +39,7 @@ import numerics.timestepping.tools as stepper_tools
 
 import physics.zerodimensional.zerodimensional as zerod
 import physics.euler.euler as euler
+import physics.shallowwater.shallowwater as shallowwater
 import physics.navierstokes.navierstokes as navierstokes
 import physics.scalar.scalar as scalar
 import physics.chemistry.chemistry as chemistry
@@ -70,10 +71,10 @@ def set_physics(mesh, physics_type):
 
 	if PhysicsType[physics_type] == PhysicsType.ConstAdvScalar and \
 			ndims == 1:
-	    physics_class = scalar.ConstAdvScalar1D
+		physics_class = scalar.ConstAdvScalar1D
 	elif PhysicsType[physics_type] == PhysicsType.ConstAdvScalar and \
 			ndims == 2:
-	    physics_class = scalar.ConstAdvScalar2D
+		physics_class = scalar.ConstAdvScalar2D
 	elif PhysicsType[physics_type] == PhysicsType.ConstAdvDiffScalar and \
 			ndims == 1:
 		physics_class = scalar.ConstAdvDiffScalar1D
@@ -81,7 +82,7 @@ def set_physics(mesh, physics_type):
 			ndims == 2:
 		physics_class = scalar.ConstAdvDiffScalar2D
 	elif PhysicsType[physics_type] == PhysicsType.Burgers and ndims == 1:
-	    physics_class = scalar.Burgers1D
+		physics_class = scalar.Burgers1D
 	elif PhysicsType[physics_type] == PhysicsType.ModelProblem:
 		physics_class = zerod.ModelProblem
 	elif PhysicsType[physics_type] == PhysicsType.ModelPSRScalar:
@@ -91,13 +92,13 @@ def set_physics(mesh, physics_type):
 	elif PhysicsType[physics_type] == PhysicsType.Pendulum:
 		physics_class = zerod.Pendulum
 	elif PhysicsType[physics_type] == PhysicsType.Euler and ndims == 1:
-	    physics_class = euler.Euler1D
+		physics_class = euler.Euler1D
 	elif PhysicsType[physics_type] == PhysicsType.Euler and ndims == 2:
-	    physics_class = euler.Euler2D
-	elif PhysicsType[physics_type] == PhysicsType.Shallowwater and ndims == 1:
-	    physics_class = shallowwater.Shallowwater1D
-	elif PhysicsType[physics_type] == PhysicsType.Shallowwater and ndims == 2:
-	    physics_class = shallowwater.Shallowwater2D
+		physics_class = euler.Euler2D
+	elif PhysicsType[physics_type] == PhysicsType.ShallowWater and ndims == 1:
+		physics_class = shallowwater.ShallowWater1D
+	elif PhysicsType[physics_type] == PhysicsType.ShallowWater and ndims == 2:
+		physics_class = shallowwater.ShallowWater2D
 	elif PhysicsType[physics_type] == PhysicsType.NavierStokes and ndims == 1:
 		physics_class = navierstokes.NavierStokes1D
 	elif PhysicsType[physics_type] == PhysicsType.NavierStokes and ndims == 2:
@@ -105,7 +106,7 @@ def set_physics(mesh, physics_type):
 	elif PhysicsType[physics_type] == PhysicsType.Chemistry and ndims ==1:
 		physics_class = chemistry.Chemistry1D
 	else:
-	    raise NotImplementedError
+		raise NotImplementedError
 
 	physics = physics_class()
 
