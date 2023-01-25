@@ -77,8 +77,8 @@ class ShallowWater(base.PhysicsBase):
             base_BC_type.StateAll: base_fcns.StateAll,
             base_BC_type.Extrapolate: base_fcns.Extrapolate,
             shallowwater_BC_type.SlipWall: shallowwater_fcns.SlipWall,
-            shallowwater_BC_type.PressureOutlet:
-                shallowwater_fcns.PressureOutlet,
+            # shallowwater_BC_type.PressureOutlet:
+            #     shallowwater_fcns.PressureOutlet,
         })
 
     def set_physical_params(self, GravitationalAcceleration=9.81):
@@ -199,30 +199,22 @@ class ShallowWater1D(ShallowWater):
         super().set_maps()
 
         d = {
-            shallowwater_fcn_type.SmoothIsentropicFlow:
-                shallowwater_fcns.SmoothIsentropicFlow,
-            shallowwater_fcn_type.MovingShock: shallowwater_fcns.MovingShock,
             shallowwater_fcn_type.DepthWave: shallowwater_fcns.DepthWave,
             shallowwater_fcn_type.SteadyState: shallowwater_fcns.SteadyState,
-            shallowwater_fcn_type.RiemannProblem:
-                shallowwater_fcns.RiemannProblem,
-            shallowwater_fcn_type.ShuOsherProblem:
-                shallowwater_fcns.ShuOsherProblem,
         }
 
         self.IC_fcn_map.update(d)
         self.exact_fcn_map.update(d)
         self.BC_fcn_map.update(d)
 
-        self.source_map.update({
-            shallowwater_source_type.StiffFriction:
-                shallowwater_fcns.StiffFriction,
-        })
+        # self.source_map.update({
+        #     shallowwater_source_type.StiffFriction:
+        #         shallowwater_fcns.StiffFriction,
+        # })
 
         self.conv_num_flux_map.update({
             base_conv_num_flux_type.LaxFriedrichs:
                 shallowwater_fcns.LaxFriedrichs1D,
-            shallowwater_conv_num_flux_type.Roe: shallowwater_fcns.Roe1D,
         })
 
     class StateVariables(Enum):

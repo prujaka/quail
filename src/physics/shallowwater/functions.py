@@ -59,6 +59,14 @@ class SourceType(Enum):
     pass
 
 
+class ConvNumFluxType(Enum):
+    '''
+    Enum class that stores the types of convective numerical fluxes. These
+    numerical fluxes are specific to the available Euler equation sets.
+    '''
+    pass
+
+
 ''' 
 ---------------
 State functions
