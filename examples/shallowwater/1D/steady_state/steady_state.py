@@ -16,7 +16,7 @@ Numerics = {
 }
 
 Output = {
-	"AutoPostProcess" : False,
+	"AutoPostProcess" : True,
 }
 
 Mesh = {

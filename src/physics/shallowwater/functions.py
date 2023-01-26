@@ -88,7 +88,7 @@ class SteadyState(FcnBase):
 
     '''
 
-    def __init__(self):
+    def __init__(self, depth=1.0):
         '''
         This method initializes the attributes.
 
@@ -100,14 +100,14 @@ class SteadyState(FcnBase):
         --------
             self: attributes initialized
         '''
-        pass
+        self.depth = depth
 
     def get_state(self, physics, x, t):
         sh, shu = physics.get_state_slices()
 
         Uq = np.zeros([x.shape[0], x.shape[1], physics.NUM_STATE_VARS])
 
-        h = 1.0 * x
+        h = self.depth * np.ones(x.shape)
         hu = 0. * h
 
         Uq[:, :, sh] = h

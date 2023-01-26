@@ -83,7 +83,10 @@ class PositivityPreserving(base.LimiterBase):
 	djac_elems: numpy array
 		stores Jacobian determinants for each element
 	'''
-	COMPATIBLE_PHYSICS_TYPES = general.PhysicsType.Euler
+	COMPATIBLE_PHYSICS_TYPES = [general.PhysicsType.Euler,
+								general.PhysicsType.ShallowWater]
+
+	# TODO: Implement the possibility to put Depth to var_name1
 
 	def __init__(self, physics_type):
 		super().__init__(physics_type)
@@ -196,7 +199,7 @@ class PositivityPreserving(base.LimiterBase):
 		elem_IDs = np.where(theta2 < 1.)[0]
 		# Modify coefficients
 		if basis.MODAL_OR_NODAL == general.ModalOrNodal.Nodal:
-			Uc[elem_IDs] = np.einsum('im, ijk -> ijk', theta2[elem_IDs], 
+			Uc[elem_IDs] = np.einsum('im, ijk -> ijk', theta2[elem_IDs],
 					Uc[elem_IDs]) + np.einsum('im, ijk -> ijk', 1 - theta2[
 					elem_IDs], U_bar[elem_IDs])
 		elif basis.MODAL_OR_NODAL == general.ModalOrNodal.Modal:
@@ -306,7 +309,7 @@ class PositivityPreservingChem(PositivityPreserving):
 		elem_IDs = np.where(theta2 < 1.)[0]
 		# Modify density coefficients
 		if basis.MODAL_OR_NODAL == general.ModalOrNodal.Nodal:
-			Uc[elem_IDs, :, irhoY] = theta2[elem_IDs]*Uc[elem_IDs, :, 
+			Uc[elem_IDs, :, irhoY] = theta2[elem_IDs]*Uc[elem_IDs, :,
 					irhoY] + (1. - theta2[elem_IDs])*rho_bar[elem_IDs, 0]
 		elif basis.MODAL_OR_NODAL == general.ModalOrNodal.Modal:
 			Uc[elem_IDs, :, irhoY] *= theta2[elem_IDs]
@@ -340,7 +343,7 @@ class PositivityPreservingChem(PositivityPreserving):
 		elem_IDs = np.where(theta3 < 1.)[0]
 		# Modify coefficients
 		if basis.MODAL_OR_NODAL == general.ModalOrNodal.Nodal:
-			Uc[elem_IDs] = np.einsum('im, ijk -> ijk', theta3[elem_IDs], 
+			Uc[elem_IDs] = np.einsum('im, ijk -> ijk', theta3[elem_IDs],
 					Uc[elem_IDs]) + np.einsum('im, ijk -> ijk', 1 - theta3[
 					elem_IDs], U_bar[elem_IDs])
 		elif basis.MODAL_OR_NODAL == general.ModalOrNodal.Modal:

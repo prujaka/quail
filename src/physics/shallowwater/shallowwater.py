@@ -43,8 +43,6 @@ from physics.shallowwater.functions import SourceType as \
     shallowwater_source_type
 
 
-# TODO: define all the mentioned functions for SW
-# TODO: add g parameter to Shallowwater(base.PhysicsBase) like in Euler gamma
 # TODO: pay attention to get_conv_flux_interior, it uses stuff from
 #  get_conv_flux_projected in Lax-Friedrichs flux in functions.py
 
@@ -106,11 +104,11 @@ class ShallowWater(base.PhysicsBase):
 
     def compute_additional_variable(self, var_name, Uq, flag_non_physical):
         ''' Extract state variables '''
-        sh = self.get_state_slice("Depth")
-        # shE = self.get_state_slice("Energy")
+        # The name "Density" is chosen for compatibility with the
+        # PositivityPreserving(base.LimiterBase) class attribute names
+        sh = self.get_state_slice("Density")
         smom = self.get_momentum_slice()
         h = Uq[:, :, sh]
-        # hE = Uq[:, :, shE]
         mom = Uq[:, :, smom]
 
         ''' Unpack '''
@@ -169,7 +167,7 @@ class ShallowWater(base.PhysicsBase):
             array: gradient of pressure with respected to physical space
                 [ne, nq, ndims]
         '''
-        sh = self.get_state_slice("Depth")
+        sh = self.get_state_slice("Density")
         smom = self.get_momentum_slice()
         h = Uq[:, :, sh]
         mom = Uq[:, :, smom]
@@ -218,17 +216,17 @@ class ShallowWater1D(ShallowWater):
         })
 
     class StateVariables(Enum):
-        Depth = "\\h"
-        XMomentum = "\\h u"
+        Density = "h"
+        XMomentum = "h u"
 
     def get_state_indices(self):
-        ih = self.get_state_index("Depth")
+        ih = self.get_state_index("Density")
         ihu = self.get_state_index("XMomentum")
 
         return ih, ihu
 
     def get_state_slices(self):
-        sh = self.get_state_slice("Depth")
+        sh = self.get_state_slice("Density")
         shu = self.get_state_slice("XMomentum")
 
         return sh, shu
@@ -309,12 +307,12 @@ class ShallowWater2D(ShallowWater):
         })
 
     class StateVariables(Enum):
-        Depth = "\\h"
-        XMomentum = "\\h u"
-        YMomentum = "\\h v"
+        Density = "h"
+        XMomentum = "h u"
+        YMomentum = "h v"
 
     def get_state_indices(self):
-        ih = self.get_state_index("Depth")
+        ih = self.get_state_index("Density")
         ihu = self.get_state_index("XMomentum")
         ihv = self.get_state_index("YMomentum")
 

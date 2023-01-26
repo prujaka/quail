@@ -190,7 +190,6 @@ class MovingShock(FcnBase):
 		# Unpack
 		M = self.M
 		xshock = self.xshock
-
 		srho, srhou, srhoE = physics.get_state_slices()
 
 		gamma = physics.gamma
